@@ -16,8 +16,10 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")
 
+firebase_credentials = json.loads(FIREBASE_CREDENTIALS_PATH)
+
 # Initialize Firebase
-cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+cred = credentials.Certificate(firebase_crendentials)
 firebase_admin.initialize_app(cred)
 
 # Access Firestore
