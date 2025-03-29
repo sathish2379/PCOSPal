@@ -20,7 +20,7 @@ FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")
 firebase_credentials = json.loads(FIREBASE_CREDENTIALS_PATH)
 
 # Initialize Firebase
-cred = credentials.Certificate(firebase_crendentials)
+cred = credentials.Certificate(firebase_credentials)
 firebase_admin.initialize_app(cred)
 
 # Access Firestore
