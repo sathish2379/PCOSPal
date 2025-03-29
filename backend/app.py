@@ -10,6 +10,7 @@ from flask import Flask, request, jsonify
 from firebase_admin.exceptions import FirebaseError
 import os
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
