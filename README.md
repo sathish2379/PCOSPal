@@ -9,6 +9,8 @@ https://pcospal.onrender.com/test
 check out the [Frontend README](frontend/README.md).
 
 # How to run Backend Server
+# Clone the repository
+git clone https://github.com/sathish2379/PCOSPal.git
 cd /backend
 python --version # returns python version available on your systems
 pip install -r requirements.txt
