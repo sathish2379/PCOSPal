@@ -1,4 +1,4 @@
-# PCOS & Irregular Period Detector
+# PCOS Pal
 
 ## Backend Test URL
 ```
