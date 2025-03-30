@@ -1,10 +1,20 @@
-# PCOS & Irregular Period Detector - API Documentation
+# PCOS & Irregular Period Detector
 
 ## Backend URL
 ```
 https://pcospal.onrender.com/test
 ```
 
+# How to run Frontend Server
+check out the [Frontend README](frontend/README.md).
+
+# How to run Backend Server
+cd /backend
+python --version # returns python version available on your systems
+pip install -r requirements.txt
+python app.py
+
+# API Documentation
 ---
 
 ## **1. User Signup**
