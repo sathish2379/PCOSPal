@@ -11,16 +11,19 @@ from firebase_admin.exceptions import FirebaseError
 import os
 from dotenv import load_dotenv
 import json
+from flask_bcrypt import bcrypt
 
 load_dotenv()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")
 
+# server
 firebase_credentials = json.loads(FIREBASE_CREDENTIALS_PATH)
-
-# Initialize Firebase
 cred = credentials.Certificate(firebase_credentials)
+
+# local
+#cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
 firebase_admin.initialize_app(cred)
 
 # Access Firestore
@@ -28,19 +31,13 @@ db = firestore.client()
 
 # Initialize Flask app
 app = Flask(__name__)
-
-# Enable CORS for all routes
 CORS(app)
-
-# Set up OpenAI API Key
 openai.api_key = OPENAI_API_KEY
 
-# Function to get personalized recommendations from OpenAI (chat model)
 def get_personalized_recommendations(symptoms_text):
     try:
-        # Use the chat-based API (v1/chat/completions) for gpt-3.5-turbo or gpt-4
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Or use "gpt-4" if you have access
+            model="gpt-3.5-turbo",
             messages = [
                 {"role": "system", "content": 
                     """
@@ -59,20 +56,17 @@ def get_personalized_recommendations(symptoms_text):
                 """}
             ],
             temperature=0.7,
-            max_tokens=500  # Limit the length of the response
+            max_tokens=500
         )
-        # Extract the recommendation from the response
         recommendations = response['choices'][0]['message']['content'].strip()
         return recommendations
     except Exception as e:
         return f"Error: {str(e)}"
 
-# Function to get doctor recommendation based on symptoms (chat model)
 def get_doctor_recommendation(symptoms_text):
     try:
-        # Use the chat-based API (v1/chat/completions) for gpt-3.5-turbo or gpt-4
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Or use "gpt-4" if you have access
+            model="gpt-3.5-turbo",
             messages = [
                 {"role": "system", "content": 
                     """
@@ -94,25 +88,23 @@ def get_doctor_recommendation(symptoms_text):
         return doctor_advice
     except Exception as e:
         return f"Error: {str(e)}"
-    
+
 @app.route('/submit_symptoms', methods=['POST'])
 def submit_symptoms():
     data = request.get_json()
-    user_id = data.get('user_id')
-    symptoms = data.get('symptoms')
-    date_time = data.get('date_time')  # Expecting ISO format "YYYY-MM-DD HH:MM:SS"
 
-    if not user_id or not symptoms or not date_time:
+    username = data.get('username')
+    symptoms = data.get('symptoms')
+    date_time = data.get('date_time')
+
+    if not username or not symptoms or not date_time:
         return jsonify({'error': 'User ID, symptoms, and date/time are required'}), 400
 
-    # Generate personalized recommendations based on symptoms
     recommendations = get_personalized_recommendations(symptoms)
 
-    # Generate consultation recommendation based on symptoms
     doctor_advice = get_doctor_recommendation(symptoms)
 
-    # Save data to Firebase Firestore
-    doc_ref = db.collection('users').document(user_id).collection('symptoms').add({
+    doc_ref = db.collection('users').document(username).collection('symptoms').add({
         'date_time': date_time,
         'symptoms': symptoms,
         'recommendations': recommendations,
@@ -122,155 +114,168 @@ def submit_symptoms():
     return jsonify({'message': 'Symptoms logged successfully', 'recommendations': recommendations, 'doctor_advice': doctor_advice})
 
 
-
 @app.route('/log_cycle', methods=['POST'])
 def log_cycle():
     data = request.get_json()
-    user_id = data.get('user_id')
-    cycle_info = data.get('cycle_info')  # Expecting {"start_date": "...", "cycle_length": ...}
-    date_time = data.get('date_time')  # Expecting ISO format "YYYY-MM-DD HH:MM:SS"
+    username = data.get('username')
+    cycle_info = data.get('cycle_info')
+    date_time = data.get('date_time')
 
-    if not user_id or not cycle_info or not date_time:
+    if not username or not cycle_info or not date_time:
         return jsonify({'error': 'User ID, cycle info, and date/time are required'}), 400
 
-    # Save cycle data in Firebase
-    doc_ref = db.collection('users').document(user_id).collection('cycles').add({
+    doc_ref = db.collection('users').document(username).collection('cycles').add({
         'date_time': date_time,
         'cycle_info': cycle_info
     })
 
     return jsonify({'message': 'Cycle data logged successfully'})
 
+@app.route('/get_user_cycles', methods=['POST'])
+def get_user_cycles():
+    try:
+        data = request.get_json()
+        username = data.get('username')
+
+        if not username:
+            return jsonify({'error': 'username is required'}), 400
+
+        cycles_ref = db.collection('users').document(username).collection('cycles')
+        user_cycles = cycles_ref.stream()
+
+        cycles = []
+        for cycle in user_cycles:
+            cycle_data = cycle.to_dict()
+            cycle_data['id'] = cycle.id
+            cycles.append(cycle_data)
+
+        if cycles:
+            return jsonify(cycles)
+        else:
+            return jsonify({'message': 'No cycles found for the user'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# AI has been used for developing this method 
 @app.route('/analyze_trends', methods=['POST'])
 def analyze_trends():
     data = request.get_json()
-    user_id = data.get('user_id')
-    
-    if not user_id:
+    username = data.get('username')
+
+    if not username:
         return jsonify({'error': 'User ID is required'}), 400
 
-    # Fetch the last two symptom records for the user
-    user_symptoms = db.collection('symptoms')\
-                      .where('user_id', '==', user_id)\
-                      .order_by('timestamp', direction=firestore.Query.DESCENDING)\
+    user_symptoms = db.collection('users')\
+                      .document(username)\
+                      .collection('symptoms')\
+                      .order_by('date_time', direction=firestore.Query.DESCENDING)\
                       .limit(2).stream()
-    
+
     past_symptoms = [doc.to_dict() for doc in user_symptoms]
 
     if len(past_symptoms) < 2:
         return jsonify({'trend_analysis': "Not enough history to analyze trends. Keep tracking your symptoms."})
 
-    # Extract symptom sets
-    prev1_symptoms = set(past_symptoms[0]['symptoms'])
-    prev2_symptoms = set(past_symptoms[1]['symptoms'])
+    # Initialize sets for symptom names and severity changes
+    prev1_symptoms = {symptom['name']: symptom['severity'] for symptom in past_symptoms[0]['symptoms']}
+    prev2_symptoms = {symptom['name']: symptom['severity'] for symptom in past_symptoms[1]['symptoms']}
 
-    # Compare past symptoms
-    new_symptoms = prev1_symptoms - prev2_symptoms
-    resolved_symptoms = prev2_symptoms - prev1_symptoms
+    # Compare past symptoms and calculate severity changes
+    new_symptoms = prev1_symptoms.keys() - prev2_symptoms.keys()
+    resolved_symptoms = prev2_symptoms.keys() - prev1_symptoms.keys()
+    worsening_symptoms = {symptom: prev1_symptoms[symptom] for symptom in prev1_symptoms if symptom in prev2_symptoms and prev1_symptoms[symptom] > prev2_symptoms[symptom]}
+    improving_symptoms = {symptom: prev1_symptoms[symptom] for symptom in prev1_symptoms if symptom in prev2_symptoms and prev1_symptoms[symptom] < prev2_symptoms[symptom]}
 
+    # Generate trend message based on the analysis
     if len(new_symptoms) > len(resolved_symptoms):
         trend_message = "Your symptoms seem to be worsening. Consider consulting a doctor."
     elif len(new_symptoms) < len(resolved_symptoms):
         trend_message = "Your symptoms appear to be improving! Keep following the recommendations."
+    elif worsening_symptoms:
+        trend_message = "Some of your symptoms seem to be worsening. Please take them seriously and consult a doctor if needed."
+    elif improving_symptoms:
+        trend_message = "Great progress! Your symptoms appear to be improving."
     else:
         trend_message = "Your symptoms are stable. Keep monitoring and take care of your health."
 
     return jsonify({'trend_analysis': trend_message})
 
-
 # Define an endpoint for getting educational resources on PCOS
-@app.route('/get_education', methods=['GET'])
-def get_education():
-    # Example of static content related to PCOS education
-    education_resources = [
-        {"title": "PCOS Myths", "content": "Common myths about PCOS include..."},
-        {"title": "PCOS Treatment Options", "content": "Treatment options for PCOS include..."},
-        {"title": "Mental Health and PCOS", "content": "Mental health and its connection with PCOS..."}
-    ]
+# @app.route('/get_education', methods=['GET'])
+# def get_education():
+#     # Example of static content related to PCOS education
+#     education_resources = [
+#         {"title": "PCOS Myths", "content": "Common myths about PCOS include..."},
+#         {"title": "PCOS Treatment Options", "content": "Treatment options for PCOS include..."},
+#         {"title": "Mental Health and PCOS", "content": "Mental health and its connection with PCOS..."}
+#     ]
     
-    return jsonify(education_resources)
+#     return jsonify(education_resources)
 
 
-# User Signup Endpoint
+def hash_password(password):
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed_password
+
+def check_password(stored_hash, password):
+    return bcrypt.checkpw(password.encode('utf-8'), stored_hash)
+
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
 
-    # Extract the necessary data
     email = data.get('email')
     password = data.get('password')
     username = data.get('username')
+
 
     if not email or not password or not username:
         return jsonify({"error": "All fields are required"}), 400
 
     try:
-        # Create user with Firebase Authentication
-        user = auth.create_user(
-            email=email,
-            password=password,
-            display_name=username
-        )
+        hashed_password = hash_password(password)
 
-        # Store additional user information in Firestore (optional)
-        user_ref = db.collection('users').document(user.uid)
+        print(username)
+        user_ref = db.collection('users').document(username)
         user_ref.set({
             'email': email,
             'username': username,
+            'password': hashed_password,
             'created_at': firestore.SERVER_TIMESTAMP
         })
 
         return jsonify({"message": "Signup successful"}), 201
 
-    except FirebaseError as e:
+    except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-# User Login Endpoint
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-
-    email = data.get('email')
     password = data.get('password')
+    username = data.get('username')
 
-    if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
-
-    try:
-        # Attempt to sign in the user via Firebase Authentication
-        user = auth.get_user_by_email(email)
-
-        # Perform password validation manually using Firebase Authentication
-        # Firebase Authentication itself doesn't support password validation directly,
-        # so you'll typically implement it on the frontend using Firebase SDK for Web/Android/iOS.
-
-        # If the credentials are correct, generate a token (JWT) for the user
-        id_token = auth.create_custom_token(user.uid)
-
-        return jsonify({"message": "Login successful", "token": id_token.decode()}), 200
-
-    except FirebaseError as e:
-        return jsonify({"error": "Invalid credentials or user not found"}), 401
-
-
-# Protected route (to test the JWT token usage)
-@app.route('/protected', methods=['GET'])
-def protected():
-    token = request.headers.get('Authorization').split("Bearer ")[-1]
-
-    if not token:
-        return jsonify({"error": "Token is missing"}), 400
+    if not password or not username:
+        return jsonify({"error": "Username and password are required"}), 400
 
     try:
-        # Verify the Firebase token
-        decoded_token = auth.verify_id_token(token)
-        uid = decoded_token['uid']
+        user_ref = db.collection('users').document(username)
+        user_doc = user_ref.get()
 
-        return jsonify({"message": f"Welcome user with UID {uid}!"}), 200
+        if not user_doc.exists:
+            return jsonify({"error": "User not found"}), 404
 
-    except FirebaseError as e:
-        return jsonify({"error": "Invalid or expired token"}), 403
+        stored_hash = user_doc.to_dict().get('password')
+
+        if not check_password(stored_hash, password):
+            return jsonify({"error": "Invalid password"}), 401
+
+        return jsonify({"message": "Login successful"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -283,7 +288,6 @@ def test():
 # Function to test Firestore connection
 def test_firestore_connection():
     try:
-        # Add a test document to a collection called "testCollection"
         doc_ref = db.collection('testCollection').document('testDocument')
         doc_ref.set({
             'testField': 'This is a test value'
@@ -299,13 +303,12 @@ def test_firestore_connection():
     except Exception as e:
         return {'status': 'error', 'message': f'Error: {str(e)}'}
 
-# Route to test Firebase connection
 @app.route('/test-firebase', methods=['GET'])
 def test_firebase():
     result = test_firestore_connection()
     return jsonify(result)
 
 if __name__ == '__main__':
-    #app.run(debug=True)
+    # app.run(debug=True)
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
 
