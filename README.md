@@ -72,7 +72,7 @@ Logs in a user using their username and password, returning a session token if s
 ## **3. Log Symptoms**
 ### **Endpoint:**
 ```
-POST /log_symptoms
+POST /submit_symptoms
 ```
 ### **Description:**
 Allows users to log their symptoms, including severity levels.
@@ -81,8 +81,8 @@ Allows users to log their symptoms, including severity levels.
 {
   "username": "sat2379",
   "symptoms": [
-    {"name": "acne", "severity": 5},
-    {"name": "mood swings", "severity": 3}
+    {"name": "acne", "severity": "Moderate"},
+    {"name": "mood swings", "severity": "Mild"}
   ]
 }
 ```
@@ -90,7 +90,9 @@ Allows users to log their symptoms, including severity levels.
 #### **Success (201)**
 ```json
 {
-  "message": "Symptoms logged successfully"
+  "message": "Symptoms logged successfully",
+  "recommendations": ["Drink more water", "Exercise regularly"],
+  "doctor_advice": "Consider consulting a doctor if symptoms persist"
 }
 ```
 #### **Error (400 - Missing fields)**
@@ -134,119 +136,6 @@ Analyzes a user's symptom trends based on past symptom logs.
   "trend_analysis": "Not enough history to analyze trends. Keep tracking your symptoms."
 }
 ```
-
----
-
-## **5. Get Symptom History**
-### **Endpoint:**
-```
-GET /symptom_history/<username>
-```
-### **Description:**
-Fetches the logged symptoms for a user.
-### **Response:**
-#### **Success (200)**
-```json
-{
-  "username": "sat2379",
-  "history": [
-    {
-      "date_time": "2025-03-29 12:30:00",
-      "symptoms": [
-        {"name": "acne", "severity": 5},
-        {"name": "mood swings", "severity": 3}
-      ]
-    }
-  ]
-}
-```
-#### **Error (404 - No records found)**
-```json
-{
-  "error": "No symptom records found for this user."
-}
-```
-
----
-
-## **6. Get Personalized Recommendations**
-### **Endpoint:**
-```
-POST /recommendations
-```
-### **Description:**
-Uses AI to generate personalized health recommendations based on symptoms.
-### **Request Body:**
-```json
-{
-  "username": "sat2379",
-  "symptoms": ["irregular cycles", "acne"]
-}
-```
-### **Response:**
-#### **Success (200)**
-```json
-{
-  "recommendations": "Maintain a healthy diet rich in whole grains and lean proteins. Consider consulting a doctor if symptoms persist."
-}
-```
-#### **Error (400 - Missing fields)**
-```json
-{
-  "error": "Username and symptoms are required"
-}
-```
-
----
-
-## **7. Delete Symptom Entry**
-### **Endpoint:**
-```
-DELETE /delete_symptom
-```
-### **Description:**
-Deletes a specific symptom entry from a user’s record.
-### **Request Body:**
-```json
-{
-  "username": "sat2379",
-  "entry_id": "symptom123"
-}
-```
-### **Response:**
-#### **Success (200)**
-```json
-{
-  "message": "Symptom entry deleted successfully"
-}
-```
-#### **Error (404 - Entry not found)**
-```json
-{
-  "error": "Symptom entry not found"
-}
-```
-
----
-
-## **8. Educational Resources**
-### **Endpoint:**
-```
-GET /resources
-```
-### **Description:**
-Fetches curated educational articles and resources related to PCOS and menstrual health.
-### **Response:**
-#### **Success (200)**
-```json
-{
-  "resources": [
-    {"title": "Managing PCOS Naturally", "url": "https://example.com/pcos"},
-    {"title": "Exercise Tips for Hormonal Balance", "url": "https://example.com/exercise"}
-  ]
-}
-```
-
 ---
 
 ## Notes:
@@ -254,8 +143,4 @@ Fetches curated educational articles and resources related to PCOS and menstrual
 - The `username` is the primary identifier in Firebase.
 - Symptoms should be logged with `name` and `severity` fields.
 - AI-powered recommendations are generated dynamically based on symptoms.
-
 ---
-
-### 📌 *For any issues or improvements, contact the development team.*
-
