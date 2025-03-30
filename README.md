@@ -1,8 +1,8 @@
 # PCOS & Irregular Period Detector - API Documentation
 
-## Base URL
+## Backend URL
 ```
-http://your-api-url.com/
+https://pcospal.onrender.com/test
 ```
 
 ---
