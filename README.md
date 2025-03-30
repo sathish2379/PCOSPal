@@ -1,6 +1,6 @@
 # PCOS & Irregular Period Detector
 
-## Backend URL
+## Backend Test URL
 ```
 https://pcospal.onrender.com/test
 ```
@@ -90,6 +90,7 @@ Allows users to log their symptoms, including severity levels.
 ```json
 {
   "username": "sat2379",
+  "date_time": "2025-01-01 10:00:00",
   "symptoms": [
     {"name": "acne", "severity": "Moderate"},
     {"name": "mood swings", "severity": "Mild"}
