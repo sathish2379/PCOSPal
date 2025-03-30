@@ -1,0 +1,12 @@
+<div 
+  class="resources-background" >
+  <h1>PCOS Resources</h1>
+
+  <div class="resource-cards">
+    <div *ngFor="let resource of resources" class="resource-card" (click)="redirectTo(resource.link)">
+      <img [src]="resource.image" alt="{{ resource.title }}" />
+      <p>{{ resource.title }}</p>
+    </div>
+  </div>
+  <button class="back-button" (click)="goBack()">← Back to Dashboard</button>
+</div>

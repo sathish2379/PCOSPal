@@ -1,0 +1,93 @@
+/* Background with color */
+.background {
+  background-color: #007b83;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Welcome text */
+.welcome-text {
+  font-size: 36px;
+  color: white;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Signup container styles */
+.signup-container {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  text-align: center;
+}
+
+/* Heading */
+h2 {
+  color: #007b83;
+  margin-bottom: 20px;
+}
+
+/* Form Labels */
+label {
+  display: block;
+  text-align: left;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Input fields */
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Button */
+button {
+  background-color: #007b83;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #005f63;
+}
+
+/* Error or success message */
+p {
+  color: #d9534f;
+  margin-top: 10px;
+}
+
+/* Login link */
+.login-link {
+  margin-top: 20px;
+  color: #007b83;
+}
+
+.login-link a {
+  color: #007b83;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,17 @@
+<div class="background">
+  <div class="welcome-text">Welcome to PCOS-Pal</div>
+  <div class="login-container">
+    <h2>Login</h2>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" [(ngModel)]="username" placeholder="Enter your username" />
+
+    <label for="password">Password</label>
+    <input type="password" id="password" [(ngModel)]="password" placeholder="Enter your password" />
+
+    <button (click)="onLogin()">Login</button>
+    <p *ngIf="message">{{ message }}</p>
+
+    <p class="signup-link">Don't have an account? <a routerLink="/signup">Sign up</a></p>
+  </div>
+</div>

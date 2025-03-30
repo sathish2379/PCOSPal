@@ -1,0 +1,48 @@
+<div 
+  class="log-cycle-background" 
+  style="background: url('../../assets/periods.png') no-repeat center center fixed; background-size: cover;">
+  <h2 style="background-color: white;">Period Cycle Logger</h2>
+  
+  <!-- Form Section -->
+  <form (ngSubmit)="logCycle()" class="form-container">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" [(ngModel)]="startDate" name="startDate" required />
+
+    <label for="cycleLength">Cycle Length (in days):</label>
+    <input type="number" id="cycleLength" [(ngModel)]="cycleLength" name="cycleLength" min="1" required />
+
+    <button type="submit" class="log-btn">Log Cycle</button>
+  </form>
+
+  <!-- Response Message -->
+  <h3 *ngIf="responseMessage">{{ responseMessage }}</h3>
+
+  <!-- Error Message -->
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+  <!-- Logs Section -->
+  <h2 style="background-color: white;">Period Cycle Logs</h2>
+
+  <table *ngIf="periodCycleLogs.length > 0; else noData" class="log-table">
+    <thead>
+      <tr>
+        <th>Start Date</th>
+        <th>Cycle Length (Days)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let log of periodCycleLogs">
+        <td>{{ log.date_time }}</td>
+        <td>{{ log.cycle_info }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- No Data Message -->
+  <ng-template #noData>
+    <p>No period cycle logs found.</p>
+  </ng-template>
+
+  <!-- Back Button -->
+  <button class="back-button" (click)="goBack()">← Back to Dashboard</button>
+</div>

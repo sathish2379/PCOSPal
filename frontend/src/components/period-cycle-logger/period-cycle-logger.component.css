@@ -1,0 +1,99 @@
+/* Background Styling */
+.log-cycle-background {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  background-color: #007b83;
+  background-blend-mode: overlay;
+}
+
+/* Header Styling */
+h2 {
+  color: #007b83;
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+/* Form Styling */
+.form-container {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 40px;
+}
+
+label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #007b83;
+}
+
+input {
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* Button Styling */
+button {
+  background-color: #007b83;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #005f63;
+}
+
+/* Error Message */
+.error {
+  color: #d9534f;
+  font-weight: bold;
+}
+
+/* Table Styling */
+.log-table {
+  width: 80%;
+  max-width: 600px;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.log-table th {
+  background-color: #007b83;
+  color: white;
+  padding: 15px;
+}
+
+.log-table td {
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+
+/* Alternating Row Colors */
+.log-table tr:nth-child(even) {
+  background-color: rgba(0, 123, 131, 0.05);
+}
+
+/* Back Button */
+.back-button {
+  margin-top: 20px;
+}

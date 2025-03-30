@@ -1,0 +1,50 @@
+.main-container {
+    background: url('../../assets/mental-health.jpg')  repeat center center fixed, #007b83;
+    background-size: cover;
+  }
+.container {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  
+  .section {
+    background-color: #f0fdf4;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #008b8b;
+  }
+  
+  h2 {
+    color: #005f73;
+  }
+  
+  p {
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .back-btn {
+    background-color: #008b8b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin-top: 20px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .back-btn:hover {
+    background-color: #005f73;
+  }
+  

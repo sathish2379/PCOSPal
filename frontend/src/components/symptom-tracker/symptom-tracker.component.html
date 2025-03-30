@@ -1,0 +1,50 @@
+<div class="symptom-tracker-background" >
+  <h1 style="background-color: white; border: 4;">PCOS Symptom Tracker</h1>
+
+  <!-- Symptom Selection Table -->
+  <table class="symptom-table">
+    <thead>
+      <tr>
+        <th>Symptom</th>
+        <th>Mild</th>
+        <th>Moderate</th>
+        <th>Severe</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of symptomsData; let i = index">
+        <td>{{ item.symptom }}</td>
+
+        <!-- Mild -->
+        <td>
+          <input type="checkbox"
+                 (change)="onSeverityChange(i, 'mild')"
+                 [checked]="selectedSymptoms[i]?.mild" />
+          <span>{{ item.mild }}</span>
+        </td>
+
+        <!-- Moderate -->
+        <td>
+          <input type="checkbox"
+                 (change)="onSeverityChange(i, 'moderate')"
+                 [checked]="selectedSymptoms[i]?.moderate" />
+          <span>{{ item.moderate }}</span>
+        </td>
+
+        <!-- Severe -->
+        <td>
+          <input type="checkbox"
+                 (change)="onSeverityChange(i, 'severe')"
+                 [checked]="selectedSymptoms[i]?.severe" />
+          <span>{{ item.severe }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Submit and Back Buttons -->
+  <div class="button-container">
+    <button class="submit-btn" (click)="submitSymptoms()">Submit Symptoms</button>
+    <button class="back-btn" (click)="goBack()">← Back to Dashboard</button>
+  </div>
+</div>

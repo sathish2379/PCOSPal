@@ -1,0 +1,29 @@
+<div class="main-container">
+<div class="container" *ngIf="data">
+    <!-- Doctor's Advice Section -->
+    <div class="section">
+      <h2>🩺 Your PCOS Pal Advices</h2>
+      <p>{{ data.doctor_advice }}</p>
+    </div>
+  
+    <!-- Recommendations Section -->
+    <div class="section">
+      <h2>📋 Your PCOS Pal Recommends</h2>
+      <p>{{ data.recommendations }}</p>
+    </div>
+  
+    <!-- Success Message -->
+    <!-- <div class="section">
+      <h2>✅ Status</h2>
+      <p>{{ data.message }}</p>
+    </div> -->
+  
+    <!-- Back to Dashboard Button -->
+    <button class="back-btn" (click)="router.navigate(['/dashboard'])">⬅ Back to Dashboard</button>
+  </div>
+  
+  <!-- Error Case -->
+  <div *ngIf="!data" class="error-message">
+    <p>No data available. Please try again.</p>
+  </div>
+</div>

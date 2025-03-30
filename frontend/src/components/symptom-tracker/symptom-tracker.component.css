@@ -1,0 +1,120 @@
+.symptom-tracker-background {
+  background: url('../../assets/mental-health.jpg')  repeat center center fixed, #007b83;
+  background-size: cover;
+}
+
+.symptom-tracker-background {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+}
+
+/* Heading */
+h1 {
+  color: #f2f6f6;
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+/* Symptom Table */
+.symptom-table {
+  width: 90%;
+  max-width: 1000px;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Table Header */
+.symptom-table th {
+  background-color: #007b83;
+  color: white;
+  padding: 15px;
+  font-size: 16px;
+}
+
+/* Table Data */
+.symptom-table td {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+/* Alternating Row Color */
+.symptom-table tr:nth-child(even) {
+  background-color: rgba(0, 123, 131, 0.05);
+}
+
+/* Checkbox Styling */
+input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-right: 8px;
+}
+
+/* Button Container */
+.button-container {
+  margin-top: 30px;
+  display: flex;
+  gap: 20px;
+}
+
+/* Submit Button */
+.submit-btn, .back-btn {
+  background-color: #007b83;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Hover Effect */
+.submit-btn:hover, .back-btn:hover {
+  background-color: #005f63;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .button-container {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .submit-btn, .back-btn {
+    width: 100%;
+  }
+}
+h1, h2, h3 {
+  color: #005f73;
+}
+p {
+  margin-bottom: 1rem;
+}
+
+strong {
+  color: #008b8b;
+}
+
+.error-message {
+  color: #d9534f;
+  font-weight: bold;
+  margin-top: 20px;
+}
+.recommendation-content {
+  color: #333;
+  line-height: 1.6;
+}
+
+.response-message, .advice-section, .recommendation-section {
+  background-color: #f0fdf4;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  border: 1px solid #008b8b;
+}

@@ -1,0 +1,12 @@
+appId: app.securemicro.com
+productName: Bgas Zeno IDE
+directories:
+  output: dist
+files:
+  - "**/*"
+extraResources:
+  - from: dist/frontend/browser
+    to: .
+linux:
+  target:
+    - AppImage
