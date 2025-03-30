@@ -4,7 +4,7 @@ This is the frontend for **PCOS-Pal**, a web-based platform designed to help use
 
 ---
 
-## 🚀 **Getting Started**
+##  **Getting Started**
 
 Follow these steps to set up and run the frontend locally.
 
