@@ -1,14 +1,17 @@
 <div 
   class="analyze-trends-background" 
-  style="background: url('../../assets/trends.png') no-repeat center center fixed; background-size: cover;"
+  style="background: url('../../assets/mental-health.jpg') no-repeat center center fixed; background-size: cover;"
 >
+<div class="heading" >
   <h1>Analyze Your Symptom Trends</h1>
+</div>
 
   <button class="analyze-btn" (click)="analyzeTrends()">Analyze Trends</button>
 
-  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-
-  <p *ngIf="trendAnalysisMessage" class="result">{{ trendAnalysisMessage }}</p>
+  <div class="section" *ngIf="errorMessage || trendAnalysisMessage" >
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+    <p *ngIf="trendAnalysisMessage" class="result">{{ trendAnalysisMessage }}</p>
+  </div>
 
   <button class="back-button" (click)="goBack()">←Back to Dashboard</button>
 </div>
